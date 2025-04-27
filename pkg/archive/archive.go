@@ -15,10 +15,12 @@ import (
 	"github.com/chainguard-dev/malcontent/pkg/programkind"
 )
 
-const (
-	// 1024MB file limit.
-	maxBytes = 1 << 30
-)
+// 1024MB is the default file size limit.
+var maxBytes = 1 << 30
+
+func SetMaxBytes(bytes int) {
+	maxBytes = bytes
+}
 
 var (
 	archivePool, tarPool, zipPool *pool.BufferPool

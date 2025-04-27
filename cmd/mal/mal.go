@@ -27,6 +27,7 @@ import (
 
 	"github.com/chainguard-dev/clog"
 	"github.com/chainguard-dev/malcontent/pkg/action"
+	"github.com/chainguard-dev/malcontent/pkg/archive"
 	"github.com/chainguard-dev/malcontent/pkg/profile"
 	"github.com/chainguard-dev/malcontent/pkg/refresh"
 	"github.com/chainguard-dev/malcontent/pkg/render"
@@ -578,11 +579,11 @@ func main() {
 
 					switch fileSizeUnit {
 					case "KB":
-						mc.MaxFileSize = int(multiplier) << 10
+						archive.SetMaxBytes(int(multiplier) << 10)
 					case "MB":
-						mc.MaxFileSize = int(multiplier) << 20
+						archive.SetMaxBytes(int(multiplier) << 20)
 					case "GB":
-						mc.MaxFileSize = int(multiplier) << 30
+						archive.SetMaxBytes(int(multiplier) << 30)
 					}
 
 					// When scanning processes, load all of the valid commands (paths)
