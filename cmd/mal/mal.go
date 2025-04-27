@@ -14,8 +14,10 @@ import (
 	"log/slog"
 	"os"
 	"os/signal"
+	"regexp"
 	"runtime"
 	"slices"
+	"strconv"
 	"strings"
 	"sync"
 	"syscall"
@@ -531,6 +533,11 @@ func main() {
 						Value:   "",
 						Usage:   "Scan an image",
 					},
+					&cli.StringFlag{
+						Name:  "max-file-size",
+						Value: "1GB",
+						Usage: "Set the maximum file size allowed for scanning",
+					},
 					&cli.BoolFlag{
 						Name:  "processes",
 						Value: false,
@@ -550,6 +557,32 @@ func main() {
 						mc.ScanPaths = cmdArgs
 					case c.Bool("processes"):
 						mc.Processes = true
+					}
+
+					// Handle parsing of the archive file size flag
+					maxFileSizeStr := strings.TrimSpace(strings.ToUpper(c.String("max-file-size")))
+
+					re := regexp.MustCompile(`^([0-9]+)([KMG]?B?)$`)
+					matches := re.FindStringSubmatch(maxFileSizeStr)
+					if len(matches) != 3 {
+						returnCode = ExitInvalidArgument
+						return fmt.Errorf("Error parsing max file size definition: %w", err)
+					}
+
+					fileSizeMultiplier, fileSizeUnit := matches[1], matches[2]
+					multiplier, err := strconv.ParseInt(fileSizeMultiplier, 10, 64)
+					if err != nil {
+						returnCode = ExitInvalidArgument
+						return fmt.Errorf("Error parsing max file size definition: %w", err)
+					}
+
+					switch fileSizeUnit {
+					case "KB":
+						mc.MaxFileSize = int(multiplier) << 10
+					case "MB":
+						mc.MaxFileSize = int(multiplier) << 20
+					case "GB":
+						mc.MaxFileSize = int(multiplier) << 30
 					}
 
 					// When scanning processes, load all of the valid commands (paths)
