@@ -579,11 +579,11 @@ func main() {
 
 					switch fileSizeUnit {
 					case "KB":
-						archive.SetMaxBytes(int(multiplier) << 10)
+						archive.SetMaxBytes(multiplier << 10)
 					case "MB":
-						archive.SetMaxBytes(int(multiplier) << 20)
+						archive.SetMaxBytes(multiplier << 20)
 					case "GB":
-						archive.SetMaxBytes(int(multiplier) << 30)
+						archive.SetMaxBytes(multiplier << 30)
 					}
 
 					// When scanning processes, load all of the valid commands (paths)

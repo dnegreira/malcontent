@@ -15,11 +15,11 @@ import (
 	"github.com/chainguard-dev/malcontent/pkg/programkind"
 )
 
-// 1024MB is the default file size limit.
-var maxBytes = 1 << 30
+// Default max file size is 1GB
+var maxBytes int64 = 1 << 30
 
-func SetMaxBytes(bytes int) {
-	maxBytes = bytes
+func SetMaxBytes(mb int64) {
+	maxBytes = mb
 }
 
 var (
